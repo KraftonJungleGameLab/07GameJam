@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Target
+  - Light
+  - Line
+  - Trash
+  - Arrow
+  - Enemy
+  - Floor
+  - Wall
+  - Key
+  - OpenZone
+  - Goal
   layers:
   - Default
   - TransparentFX
