@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] private float _dieTime;
-    [HideInInspector] private float _dieFdt;
+    private float _dieFdt;
     [HideInInspector] public bool _isOnEnemy;
     [HideInInspector] public Vector3 savePoint;
     public PlayerBehavior player;
@@ -24,21 +24,22 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if(_isOnEnemy)
+        if (_dieFdt > _dieTime)
         {
-            _dieFdt += Time.deltaTime;
-
-            if (_dieFdt > _dieTime)
-            {
-                Debug.Log("PlayerDie!!");
-            }
+            Debug.Log("PlayerDie!!");
         }
-        else
-        {
-            _dieFdt = 0;
-        }
-        
     }
+
+    public void PlusDieFdt()
+    {
+        _dieFdt += Time.deltaTime;
+    }
+
+    public void ResetDieFdt()
+    {
+        _dieFdt = 0;
+    }
+
 
     public void SetSavePoint(Vector3 savePosition)
     {
