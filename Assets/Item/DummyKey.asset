@@ -16,4 +16,4 @@ MonoBehaviour:
   _keyValue: 2
   _itemName: DummyKey
   _itemImage: {fileID: 21300000, guid: c72111901a3f5d14e89a12e31a561080, type: 3}
-  _itemColor: {r: 0.7372549, g: 0.7372549, b: 0, a: 1}
+  _itemColor: {r: 0.644, g: 0.644, b: 0, a: 1}
