@@ -17086,14 +17086,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 383463665347387160, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -0.22839355
-      objectReference: {fileID: 0}
-    - target: {fileID: 383463665429247650, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -0.22839355
-      objectReference: {fileID: 0}
     - target: {fileID: 383463666512103393, guid: e443bb273a7e36541927b797791a1237, type: 3}
       propertyPath: m_Name
       value: UIManagerCanvas
@@ -17181,26 +17173,6 @@ PrefabInstance:
     - target: {fileID: 383463666512103421, guid: e443bb273a7e36541927b797791a1237, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383463666529329136, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383463666529329136, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383463666529329136, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383463666529329136, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 27.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 383463666529329136, guid: e443bb273a7e36541927b797791a1237, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e443bb273a7e36541927b797791a1237, type: 3}
