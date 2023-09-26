@@ -40,6 +40,6 @@ public class GameManager : MonoBehaviour
 
     public void SetSavePoint()
     {
-        SavePoint = savePosition;
+        //SavePoint = savePosition;
     }
 }
