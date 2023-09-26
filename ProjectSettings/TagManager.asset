@@ -16,6 +16,7 @@ TagManager:
   - OpenZone
   - Goal
   - Item
+  - Switch
   layers:
   - Default
   - TransparentFX

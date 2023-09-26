@@ -16,8 +16,8 @@ public class PlayerBehavior : MonoBehaviour
     private Volume _volume;
     private bool _isSkillCT = false;
     private bool _isSkillUse = false;
-    private float _fdt;
-    [SerializeField] private float _skillMaxCT;
+    public float _fdt;
+    public float _skillMaxCT;
 
 
     public ItemInfo _playerInven;
@@ -48,7 +48,7 @@ public class PlayerBehavior : MonoBehaviour
         if (_isSkillCT && !_isSkillUse)
         {
             _fdt += Time.deltaTime;
-
+            UIManager.Instance.UpdateCoolTime(_fdt);
             if(_fdt > _skillMaxCT) 
             {
                 _isSkillCT = false;
@@ -77,6 +77,30 @@ public class PlayerBehavior : MonoBehaviour
             StartCoroutine(ColorDiffOn());
         }
     }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if(context.started) 
+        {
+            if(Time.timeScale > 0) 
+            {
+                UIManager.Instance.PauseOn();
+            }
+            else
+            {
+                UIManager.Instance.PauseOff();
+            }
+        }
+    }
+
+    public void OnRestart(InputAction.CallbackContext context)
+    {
+        if(context.started) 
+        {
+            Debug.Log("Restart");
+        }
+    }
+
 
     IEnumerator ColorDiffOn()
     {
@@ -140,6 +164,12 @@ public class PlayerBehavior : MonoBehaviour
                         _playerInven = null;
                         return;
                     }
+                }
+
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
+                {
+                    hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    return;
                 }
             }
         }
