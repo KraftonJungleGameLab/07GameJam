@@ -15,6 +15,7 @@ TagManager:
   - Key
   - OpenZone
   - Goal
+  - Item
   layers:
   - Default
   - TransparentFX
