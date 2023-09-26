@@ -293,7 +293,7 @@
                 {
                     "name": "",
                     "id": "5b469d93-f3b7-4e5f-8fde-05eb7d6cf3ad",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -315,7 +315,7 @@
                 {
                     "name": "",
                     "id": "a0fbdcd5-f7af-4945-9f64-703877088223",
-                    "path": "<Keyboard>/g",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
