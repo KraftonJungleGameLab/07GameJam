@@ -101,7 +101,7 @@ public class PlayerBehavior : MonoBehaviour
     {
         if(context.started) 
         {
-            Debug.Log("Restart");
+            GameManager.Instance.ReloadScene();
         }
     }
 
