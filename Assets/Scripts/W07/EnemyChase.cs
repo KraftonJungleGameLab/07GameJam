@@ -16,6 +16,8 @@ public class EnemyChase : MonoBehaviour
     private Vector3 _startPos;
     private bool _isPlayerDie;
 
+    private float _maxDistance = 17.5f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +33,15 @@ public class EnemyChase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Vector2.Distance(transform.position, _startPos) > _maxDistance)
+        {
+            //Debug.Log($"Distance : {Vector2.Distance(transform.position, _startPos)}");
+            _agent.SetDestination(_startPos);
+            _isPlayerDetected = false;
+            return;
+        }
+
+
         // 적과 플레이어 사이에 장애물이 있는지 검사
         if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
         {
@@ -55,7 +66,7 @@ public class EnemyChase : MonoBehaviour
         }
         else
         {
-            _detectRange = 20f;
+            _detectRange = 10f;
             _agent.SetDestination(_startPos);
             _agent.speed = 5;
             if (particle.isPlaying)
@@ -67,11 +78,10 @@ public class EnemyChase : MonoBehaviour
         {
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                //GameManager.Instance._isOnEnemy = true;
+                GameManager.Instance.PlusDieFdt();
                 return;
             }
         }
-        //GameManager.Instance._isOnEnemy = false;
 
         RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
 
