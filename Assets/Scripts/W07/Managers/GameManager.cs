@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float _dieTime;
     [HideInInspector] private float _dieFdt;
     [HideInInspector] public bool _isOnEnemy;
-
+    [HideInInspector] public Vector3 savePoint;
     void Start()
     {
         
@@ -36,5 +36,10 @@ public class GameManager : MonoBehaviour
             _dieFdt = 0;
         }
         
+    }
+
+    public void SetSavePoint()
+    {
+        SavePoint = savePosition;
     }
 }
