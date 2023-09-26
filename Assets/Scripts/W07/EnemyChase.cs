@@ -67,11 +67,11 @@ public class EnemyChase : MonoBehaviour
         {
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                GameManager.Instance._isOnEnemy = true;
+                //GameManager.Instance._isOnEnemy = true;
                 return;
             }
         }
-        GameManager.Instance._isOnEnemy = false;
+        //GameManager.Instance._isOnEnemy = false;
 
         RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
 
