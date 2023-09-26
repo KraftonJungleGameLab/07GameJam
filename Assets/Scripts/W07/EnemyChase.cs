@@ -9,6 +9,9 @@ public class EnemyChase : MonoBehaviour
     private PlayerBehavior _playerBehavior;
     private bool _isPlayerDetected = false;
     private NavMeshAgent _agent;
+
+    [SerializeField] private float _enemyChaseSpeed;
+
     [SerializeField] private ParticleSystem particle;
     [SerializeField] private float _detectRange;
     [SerializeField] private float _bodyRange;
@@ -91,7 +94,7 @@ public class EnemyChase : MonoBehaviour
             {
                 _detectRange = 20f;
                 _isPlayerDetected = true;
-                _agent.speed = 8;
+                _agent.speed = _enemyChaseSpeed;
                 return;
             }
         }

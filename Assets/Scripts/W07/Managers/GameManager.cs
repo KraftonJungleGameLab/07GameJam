@@ -1,3 +1,4 @@
+using NavMeshPlus.Components;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,24 +16,26 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float _dieTime;
     public float _dieFdt;
     [HideInInspector] public bool _isOnEnemy;
-    [HideInInspector] public static Vector3 savePoint;
+    public static Vector3 _playerFirstPos;
+    public static Vector3 savePoint;
+    public static bool _isSaved = false;
     public PlayerBehavior player;
+
+    [SerializeField] private NavMeshSurface _redSurface;
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerBehavior>();
-        player.gameObject.transform.position = savePoint;
-        savePoint = player.transform.position;
+        _playerFirstPos = player.gameObject.transform.position;
+        if(_isSaved) player.gameObject.transform.position = savePoint;
     }
 
     void Update()
     {
         if (_dieFdt > _dieTime)
         {
-            player.transform.position = savePoint;
             Scene scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
             _dieFdt = 0;
-
         }
     }
 
@@ -49,7 +52,20 @@ public class GameManager : MonoBehaviour
 
     public void SetSavePoint(Vector3 savePosition)
     {
+        _isSaved = true;
         savePoint = savePosition;
         Debug.Log(savePoint);
     }
+
+    public void ResetSavePoint()
+    {
+        _isSaved = false;
+        savePoint = Vector2.zero;
+    }
+
+    public void ModifyMesh()
+    {
+        _redSurface.BuildNavMesh();
+    }
+
 }

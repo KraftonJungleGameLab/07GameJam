@@ -8,6 +8,10 @@ public class Switch : MonoBehaviour
 
     public void OpenDoor()
     {
-        _switchDoor.SetActive(false);
+        if (_switchDoor.activeSelf)
+        {
+            _switchDoor.SetActive(false);
+            GameManager.Instance.ModifyMesh();
+        }      
     }
 }
