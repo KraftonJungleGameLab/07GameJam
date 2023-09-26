@@ -1,22 +1,24 @@
 using UnityEngine;
 using System.Collections;
-//using UnityEditor.Rendering.LookDev;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerBehavior : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _keySprite;
+    [SerializeField] private float _moveSpeed;
+
     private Rigidbody2D _myRigidBody;
-    [SerializeField]private float _moveSpeed;
-
-    [SerializeField] private GameObject _playerLightParent;
-
     private PlayerLight _playerLight;
 
     private Vector2 inputVector;
-    private Vector2 currentDirection;
 
-    [SerializeField] private float maxAngularSpeed;
+    private Volume _volume;
+    private bool _isSkillCT = false;
+    private bool _isSkillUse = false;
+    private float _fdt;
+    [SerializeField] private float _skillMaxCT;
+
 
     public ItemInfo _playerInven;
 
@@ -24,6 +26,22 @@ public class PlayerBehavior : MonoBehaviour
     {
         _myRigidBody = GetComponent<Rigidbody2D>();
         _playerLight = GetComponentInChildren<PlayerLight>();
+        _volume = GetComponent<Volume>();
+    }
+
+    private void Update()
+    {
+        if(_isSkillCT && !_isSkillUse)
+        {
+            _fdt += Time.deltaTime;
+
+            if(_fdt > _skillMaxCT) 
+            {
+                _isSkillCT = false;
+                _fdt = 0;
+            }
+        }
+        
     }
 
     // Update is called once per frame
@@ -36,10 +54,27 @@ public class PlayerBehavior : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         inputVector = context.ReadValue<Vector2>();
-        //_playerLight.SetTargetDirection(inputVector);
-        //_playerLightParent
-        //_playerLightParent.transform.rotation = context.ReadValue<Vector2>();
     }
+
+    public void OnColorDiff(InputAction.CallbackContext context)
+    {
+        if(context.started && !_isSkillCT && !_isSkillUse) 
+        {
+            StartCoroutine(ColorDiffOn());
+        }
+    }
+
+    IEnumerator ColorDiffOn()
+    {
+        _volume.enabled = false;
+        _isSkillUse = true;
+        yield return new WaitForSeconds(2f);
+        _isSkillUse = false;
+        _volume.enabled = true;
+        _isSkillCT = true;
+    }
+
+    
 
     public void OnGetItem(InputAction.CallbackContext context)
     {
@@ -97,57 +132,8 @@ public class PlayerBehavior : MonoBehaviour
             }
         }
 
-
-
-
-        /*
-        if(_canGetItem && context.started) 
-        {
-            if (_playerInven == null)
-            {
-                _playerInven = _nowItem;              
-            }
-            else if(_playerInven != null) 
-            {
-                ItemInfo temp = _playerInven;
-                _playerInven = _nowItem;
-                _nowItem = temp;
-            }
-        }*/
     }
 
-    /*
-    void UpdateAim()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.y = transform.position.y;
-        //mousePointer.transform.position = mousePos;
-        float deltaY = mousePos.z - transform.position.z;
-        float deltaX = mousePos.x - transform.position.x;
-        float angleInDegrees = Mathf.Atan2(deltaY, deltaX) * 180 / Mathf.PI;
-        transform.eulerAngles = new Vector3(0, -angleInDegrees, 0);
-    }
-    */
-    /*
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.gameObject.CompareTag("Item"))
-        {
-            _canGetItem = true;
-            _nowItem = collision.gameObject.GetComponent<ItemInfo>();
-        }
-    }
-
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Item"))
-        {
-            _canGetItem = false;
-            _nowItem = null;
-        }
-    }
-    */
 
     protected void OnDrawGizmosSelected()
     {

@@ -50,8 +50,8 @@ public class EnemyChase : MonoBehaviour
                 particle.Play();
             }
 
-            Debug.Log("PlayerDetected bool" + _isPlayerDetected);
-            Debug.Log(particle.transform.position);
+            //Debug.Log("PlayerDetected bool" + _isPlayerDetected);
+            //Debug.Log(particle.transform.position);
         }
         else
         {
@@ -65,12 +65,13 @@ public class EnemyChase : MonoBehaviour
         RaycastHit2D[] bodyhits = Physics2D.CircleCastAll(this.transform.position, _bodyRange, Vector2.zero);
         foreach (RaycastHit2D hit in bodyhits)
         {
-            if (hit.collider != null && hit.collider.CompareTag("Player") && !GameManager.instance._isGoalActive)
+            if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                //StartCoroutine(PlayerDie());
-                //return;
+                GameManager.Instance._isOnEnemy = true;
+                return;
             }
         }
+        GameManager.Instance._isOnEnemy = false;
 
         RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
 
@@ -91,6 +92,7 @@ public class EnemyChase : MonoBehaviour
     {
         if (!_isPlayerDie)
         {
+            Debug.Log("PlayerDie");
             _isPlayerDie = true;
             //SoundManager.instance.StopBGM();
             //SoundManager.instance.PlaySE("Die");
