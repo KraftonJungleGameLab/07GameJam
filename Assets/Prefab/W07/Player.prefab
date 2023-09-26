@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _keySprite: {fileID: 918529803761782395}
-  _moveSpeed: 10
-  _skillMaxCT: 0
+  _moveSpeed: 7
+  _skillMaxCT: 3
   _playerInven: {fileID: 0}
 --- !u!50 &918529802962493940
 Rigidbody2D:
@@ -473,7 +473,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 000000009d040637
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
