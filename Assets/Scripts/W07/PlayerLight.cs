@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerLight : MonoBehaviour
 {
     [SerializeField] private GameObject _lightArea;
-    [SerializeField] private HardLight2D _playerLight;
+    [SerializeField] private Light2D _playerLight;
     [SerializeField] private float _basicLightRange;
     [SerializeField] private float _basicShieldRange;
     [SerializeField] private float _maxFdt;
@@ -25,15 +26,15 @@ public class PlayerLight : MonoBehaviour
     {
         _fdt += Time.deltaTime;
 
-        _playerLight.Range = _basicLightRange - _fdt * (_basicLightRange / (_maxFdt * 2f));
+        _playerLight.pointLightOuterRadius = _basicLightRange - _fdt * (_basicLightRange / (_maxFdt * 2f));
         _lightArea.transform.localScale = new Vector3(_basicShieldRange - _fdt * (_basicShieldRange / (_maxFdt * 2f)), _basicShieldRange - _fdt * (_basicShieldRange / (_maxFdt * 2f)), 1);
-        _playerLight.Intensity = _basicIntensity - _fdt * (_basicIntensity / (_maxFdt * 3f));
+        _playerLight.intensity = _basicIntensity - _fdt * (_basicIntensity / (_maxFdt * 3f));
 
         if(_fdt > _maxFdt)
         {
-            _playerLight.Range = 0.1f;
+            _playerLight.pointLightOuterRadius = 0.1f;
             _lightArea.transform.localScale = new Vector3(0.1f, 0.1f, 1);
-            _playerLight.Intensity = 0.1f;
+            _playerLight.intensity = 0.1f;
         }
         /*
         if (!targetDirection.Equals(Vector3.zero))
@@ -50,8 +51,8 @@ public class PlayerLight : MonoBehaviour
     public void ResetLight()
     {
         _fdt = 0;
-        _playerLight.Range = _basicLightRange;
-        _playerLight.Intensity = _basicIntensity;
+        _playerLight.pointLightOuterRadius = _basicLightRange;
+        _playerLight.intensity = _basicIntensity;
         _lightArea.transform.localScale = new Vector3(_basicShieldRange, _basicShieldRange, 1);
     }
     /*
