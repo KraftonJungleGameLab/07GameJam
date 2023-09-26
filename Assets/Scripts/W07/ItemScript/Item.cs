@@ -8,7 +8,8 @@ public class Item : ScriptableObject
     public enum Key
     {
         red,
-        green
+        green,
+        Dummy
     }
 
     [Header("Item spec")]
