@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,13 +13,14 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] private float _dieTime;
-    private float _dieFdt;
+    public float _dieFdt;
     [HideInInspector] public bool _isOnEnemy;
-    [HideInInspector] public Vector3 savePoint;
+    [HideInInspector] public static Vector3 savePoint;
     public PlayerBehavior player;
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerBehavior>();
+        player.gameObject.transform.position = savePoint;
         savePoint = player.transform.position;
     }
 
@@ -26,7 +28,11 @@ public class GameManager : MonoBehaviour
     {
         if (_dieFdt > _dieTime)
         {
-            Debug.Log("PlayerDie!!");
+            player.transform.position = savePoint;
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
+            _dieFdt = 0;
+
         }
     }
 
@@ -44,5 +50,6 @@ public class GameManager : MonoBehaviour
     public void SetSavePoint(Vector3 savePosition)
     {
         savePoint = savePosition;
+        Debug.Log(savePoint);
     }
 }
