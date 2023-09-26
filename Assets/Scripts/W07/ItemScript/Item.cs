@@ -19,4 +19,12 @@ public class Item : ScriptableObject
     public Sprite _itemImage;
     public Color _itemColor;
 
+    public Item(Item item)
+    {
+        this._isKey = item._isKey;
+        this._keyValue = item._keyValue;
+        this._itemName = item._itemName;
+        this._itemImage = item._itemImage;
+        this._itemColor = item._itemColor;
+    }
 }

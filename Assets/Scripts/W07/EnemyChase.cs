@@ -11,10 +11,13 @@ public class EnemyChase : MonoBehaviour
     [SerializeField] private float _detectRange;
     [SerializeField] private float _bodyRange;
 
+    private Vector3 _startPos;
+
     private bool _isPlayerDie;
     // Start is called before the first frame update
     void Start()
     {
+        _startPos = transform.position;
         _isPlayerDie = false;
         _playerBehavior = FindAnyObjectByType<PlayerBehavior>();
         _agent = GetComponent<NavMeshAgent>();
@@ -30,16 +33,11 @@ public class EnemyChase : MonoBehaviour
             _agent.SetDestination(_playerBehavior.gameObject.transform.position);
         }
 
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
-
-        foreach (RaycastHit2D hit in hits)
+        else
         {
-            if (hit.collider != null & hit.collider.CompareTag("Player"))
-            {            
-                _detectRange = 10f;
-                _isPlayerDetected = true;
-                _agent.speed = 5;
-            }
+            _detectRange = 5f;
+            _agent.SetDestination(_startPos);
+            _agent.speed = 5;
         }
 
 
@@ -49,17 +47,23 @@ public class EnemyChase : MonoBehaviour
             if (hit.collider != null && hit.collider.CompareTag("Player") && !GameManager.instance._isGoalActive)
             {
                 //StartCoroutine(PlayerDie());
-                return;
+                //return;
             }
-
-            if (hit.collider != null && hit.collider.CompareTag("Light"))
-            {
-                _agent.speed = 0;
-                return;
-            }
-
         }
 
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider != null & hit.collider.CompareTag("Player"))
+            {
+                _detectRange = 10f;
+                _isPlayerDetected = true;
+                _agent.speed = 8;
+                return;
+            }
+        }
+        _isPlayerDetected = false;
     }
 
     IEnumerator PlayerDie()
