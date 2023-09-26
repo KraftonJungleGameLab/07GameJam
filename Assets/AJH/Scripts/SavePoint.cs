@@ -5,19 +5,16 @@ using UnityEngine;
 public class SavePoint : MonoBehaviour
 {
     public Vector3 savePosition;
-    public BoxCollider stageBlockCollider;
-
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
             if (savePosition == Vector3.zero)
+            {
                 GameManager.Instance.SetSavePoint(other.transform.position);
+            }
             else
                 GameManager.Instance.SetSavePoint(savePosition);
-
-            stageBlockCollider.enabled = true;
         }
     }
 }

@@ -112,8 +112,6 @@ public class PlayerBehavior : MonoBehaviour
         _isSkillCT = true;
     }
 
-    
-
     public void OnGetItem(InputAction.CallbackContext context)
     {
         if (context.started)
