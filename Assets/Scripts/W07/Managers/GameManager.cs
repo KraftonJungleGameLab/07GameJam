@@ -15,9 +15,11 @@ public class GameManager : MonoBehaviour
     [HideInInspector] private float _dieFdt;
     [HideInInspector] public bool _isOnEnemy;
     [HideInInspector] public Vector3 savePoint;
+    public PlayerBehavior player;
     void Start()
     {
-        
+        player = GameObject.Find("Player").GetComponent<PlayerBehavior>();
+        savePoint = player.transform.position;
     }
 
     void Update()
@@ -38,8 +40,8 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void SetSavePoint()
+    public void SetSavePoint(Vector3 savePosition)
     {
-        SavePoint = savePosition;
+        savePoint = savePosition;
     }
 }
