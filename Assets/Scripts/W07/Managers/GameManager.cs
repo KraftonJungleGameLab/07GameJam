@@ -32,10 +32,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (_dieFdt > _dieTime)
-        {
-            Scene scene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(scene.name);
+        {          
             _dieFdt = 0;
+            ReloadScene();
         }
     }
 
@@ -68,4 +67,14 @@ public class GameManager : MonoBehaviour
         _redSurface.BuildNavMesh();
     }
 
+    public void ReloadScene()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+    }
+
+    public void NextScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
 }

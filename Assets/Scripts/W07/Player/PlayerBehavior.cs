@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerBehavior : MonoBehaviour
 {
@@ -19,6 +21,8 @@ public class PlayerBehavior : MonoBehaviour
     public float _fdt;
     public float _skillMaxCT;
 
+    public Image _textBox;
+    public TextMeshProUGUI _infoText;
 
     public ItemInfo _playerInven;
 
@@ -133,6 +137,7 @@ public class PlayerBehavior : MonoBehaviour
                             _keySprite.color = _playerInven.GetItem()._itemColor;
                             hit.collider.gameObject.GetComponent<ItemInfo>().SetItem(temp);
                             //Debug.Log($"After Swap Item : {hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._itemName}");
+                            PrintInfo("열쇠 교체.");
                             return;
                         }
 
@@ -142,6 +147,7 @@ public class PlayerBehavior : MonoBehaviour
                             _keySprite.gameObject.SetActive(true);
                             _keySprite.color = _playerInven.GetItem()._itemColor;
                             hit.collider.gameObject.SetActive(false);
+                            PrintInfo("열쇠를 집었다.");
                             return;
                         }
                     }
@@ -149,6 +155,7 @@ public class PlayerBehavior : MonoBehaviour
                     else
                     {
                         _playerLight.ResetLight();
+                        PrintInfo("횃불을 집었다.");
                         return;
                         //hit.collider.gameObject.SetActive(false);
                     }
@@ -157,11 +164,17 @@ public class PlayerBehavior : MonoBehaviour
                 if(hit.collider != null && hit.collider.gameObject.CompareTag("OpenZone"))
                 {
                     Item needItem = hit.collider.gameObject.GetComponent<CheckItem>()._needItemInfo;
-                    if(needItem  == _playerInven.GetItem()) 
+                    if(_playerInven != null && needItem == _playerInven.GetItem()) 
                     {
                         hit.collider.gameObject.SetActive(false);
                         _keySprite.gameObject.SetActive(false);
                         _playerInven = null;
+                        PrintInfo("자물쇠가 열렸다");
+                        return;
+                    }
+                    else
+                    {
+                        PrintInfo("열리지 않는다.");
                         return;
                     }
                 }
@@ -169,6 +182,7 @@ public class PlayerBehavior : MonoBehaviour
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
                 {
                     hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    PrintInfo("문이 열렸다");
                     return;
                 }
             }
@@ -176,6 +190,35 @@ public class PlayerBehavior : MonoBehaviour
 
     }
 
+    private void PrintInfo(string text)
+    {
+        //StopCoroutine(InfoFade());
+        _infoText.text = text;
+        StartCoroutine(InfoFade());
+    }
+
+    IEnumerator InfoFade()
+    {
+        Color tempColor = _textBox.color;
+        tempColor.a += Time.deltaTime * 10f;
+        _textBox.color = tempColor;
+        yield return new WaitForSeconds(0.1f);
+        tempColor.a = 1f;
+        _textBox.color = tempColor;
+        _infoText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        tempColor.a = 0f;
+        _textBox.color = tempColor;
+        _infoText.gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Goal"))
+        {
+            GameManager.Instance.NextScene();
+        }
+    }
 
     protected void OnDrawGizmosSelected()
     {
