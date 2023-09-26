@@ -31,7 +31,21 @@ public class PlayerBehavior : MonoBehaviour
 
     private void Update()
     {
-        if(_isSkillCT && !_isSkillUse)
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 0.5f, Vector2.zero);
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if(hit.collider.gameObject.CompareTag("Enemy"))
+            {
+                GameManager.Instance.PlusDieFdt();
+                return;
+            }                
+        }
+        GameManager.Instance.ResetDieFdt();
+
+
+
+        if (_isSkillCT && !_isSkillUse)
         {
             _fdt += Time.deltaTime;
 
@@ -138,7 +152,7 @@ public class PlayerBehavior : MonoBehaviour
     protected void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, 2f);
+        Gizmos.DrawWireSphere(transform.position, 0.5f);
 
     }
 }
