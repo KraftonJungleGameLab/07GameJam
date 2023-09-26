@@ -143,6 +143,12 @@ public class PlayerBehavior : MonoBehaviour
                         return;
                     }
                 }
+
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
+                {
+                    hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    return;
+                }
             }
         }
 
