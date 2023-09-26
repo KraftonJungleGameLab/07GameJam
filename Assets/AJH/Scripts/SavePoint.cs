@@ -14,7 +14,10 @@ public class SavePoint : MonoBehaviour
                 GameManager.Instance.SetSavePoint(other.transform.position);
             }
             else
+            {
                 GameManager.Instance.SetSavePoint(savePosition);
+            }
+                
         }
     }
 }
