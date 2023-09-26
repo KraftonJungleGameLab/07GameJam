@@ -117,7 +117,7 @@ public class PlayerBehavior : MonoBehaviour
         if (context.started)
         {
             Debug.Log("F");
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, 2f, Vector2.zero);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, 0.5f, Vector2.zero);
             foreach (RaycastHit2D hit in hits)
             {
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Item"))
@@ -181,6 +181,5 @@ public class PlayerBehavior : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, 0.5f);
-
     }
 }
