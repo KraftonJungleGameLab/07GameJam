@@ -10,9 +10,7 @@ public class PlayerBehavior : MonoBehaviour
 
     private Vector2 inputVector;
 
-    public ItemInfo _nowItem;
-
-    private bool _canGetItem;
+    public ItemInfo _playerInven;
 
     void Start()
     {
@@ -23,7 +21,6 @@ public class PlayerBehavior : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
         _myRigidBody.velocity = inputVector * _moveSpeed;
 
         //UpdateAim();
@@ -34,12 +31,62 @@ public class PlayerBehavior : MonoBehaviour
         inputVector = context.ReadValue<Vector2>();
     }
 
-    public void OnGetItem(InputAction.CallbackContext context) 
+    public void OnGetItem(InputAction.CallbackContext context)
     {
+        if (context.started)
+        {
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, 2f, Vector2.zero);
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Item"))
+                {
+                    if(hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
+                    {
+                        if (_playerInven != null)
+                        {
+                            Item temp = _playerInven.GetItem();
+
+                            _playerInven.SetItem(hit.collider.gameObject.GetComponent<ItemInfo>().GetItem());
+                            //Debug.Log($"Drop Item : {hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._itemName}");
+
+                            hit.collider.gameObject.GetComponent<ItemInfo>().SetItem(temp);
+                            //Debug.Log($"After Swap Item : {hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._itemName}");
+                            return;
+                        }
+
+                        else if (_playerInven == null)
+                        {
+                            _playerInven = hit.collider.gameObject.GetComponent<ItemInfo>();
+                            hit.collider.gameObject.SetActive(false);
+                            return;
+                        }
+                    }
+                    
+                    else
+                    {
+                        hit.collider.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+
+
+
+
+        /*
         if(_canGetItem && context.started) 
         {
-            Inventory.Instance.CheckItem(_nowItem);
-        }
+            if (_playerInven == null)
+            {
+                _playerInven = _nowItem;              
+            }
+            else if(_playerInven != null) 
+            {
+                ItemInfo temp = _playerInven;
+                _playerInven = _nowItem;
+                _nowItem = temp;
+            }
+        }*/
     }
 
     /*
@@ -54,7 +101,7 @@ public class PlayerBehavior : MonoBehaviour
         transform.eulerAngles = new Vector3(0, -angleInDegrees, 0);
     }
     */
-    
+    /*
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.CompareTag("Item"))
@@ -63,6 +110,8 @@ public class PlayerBehavior : MonoBehaviour
             _nowItem = collision.gameObject.GetComponent<ItemInfo>();
         }
     }
+
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Item"))
@@ -70,5 +119,13 @@ public class PlayerBehavior : MonoBehaviour
             _canGetItem = false;
             _nowItem = null;
         }
+    }
+    */
+
+    protected void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, 2f);
+
     }
 }
