@@ -185,6 +185,13 @@ public class PlayerBehavior : MonoBehaviour
                     PrintInfo("πÆ¿Ã ø≠∑»¥Ÿ");
                     return;
                 }
+
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
+                {
+                    hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    PrintInfo("πÆ¿Ã ø≠∑»¥Ÿ");
+                    return;
+                }
             }
         }
 
@@ -210,14 +217,6 @@ public class PlayerBehavior : MonoBehaviour
         tempColor.a = 0f;
         _textBox.color = tempColor;
         _infoText.gameObject.SetActive(false);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.gameObject.CompareTag("Goal"))
-        {
-            GameManager.Instance.NextScene();
-        }
     }
 
     protected void OnDrawGizmosSelected()
