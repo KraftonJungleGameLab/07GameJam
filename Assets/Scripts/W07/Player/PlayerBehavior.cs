@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerBehavior : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class PlayerBehavior : MonoBehaviour
     [SerializeField] private float _moveSpeed;
 
     private Rigidbody2D _myRigidBody;
-    [SerializeField] private PlayerLight[] _playerLight;
+    private PlayerLight _playerLight;
 
     private Vector2 inputVector;
 
@@ -19,13 +21,15 @@ public class PlayerBehavior : MonoBehaviour
     public float _fdt;
     public float _skillMaxCT;
 
+    public Image _textBox;
+    public TextMeshProUGUI _infoText;
 
     public ItemInfo _playerInven;
 
     void Start()
     {
         _myRigidBody = GetComponent<Rigidbody2D>();
-        //_playerLight = GetComponentInChildren<PlayerLight>();
+        _playerLight = GetComponentInChildren<PlayerLight>();
         _volume = GetComponent<Volume>();
     }
 
@@ -35,11 +39,11 @@ public class PlayerBehavior : MonoBehaviour
 
         foreach (RaycastHit2D hit in hits)
         {
-            if(hit.collider.gameObject.CompareTag("Enemy"))
+            if (hit.collider.gameObject.CompareTag("Enemy"))
             {
                 GameManager.Instance.PlusDieFdt();
                 return;
-            }                
+            }
         }
         GameManager.Instance.ResetDieFdt();
 
@@ -49,13 +53,13 @@ public class PlayerBehavior : MonoBehaviour
         {
             _fdt += Time.deltaTime;
             UIManager.Instance.UpdateCoolTime(_fdt);
-            if(_fdt > _skillMaxCT) 
+            if (_fdt > _skillMaxCT)
             {
                 _isSkillCT = false;
                 _fdt = 0;
             }
         }
-        
+
     }
 
     // Update is called once per frame
@@ -72,7 +76,7 @@ public class PlayerBehavior : MonoBehaviour
 
     public void OnColorDiff(InputAction.CallbackContext context)
     {
-        if(context.started && !_isSkillCT && !_isSkillUse) 
+        if (context.started && !_isSkillCT && !_isSkillUse)
         {
             StartCoroutine(ColorDiffOn());
         }
@@ -80,9 +84,9 @@ public class PlayerBehavior : MonoBehaviour
 
     public void OnPause(InputAction.CallbackContext context)
     {
-        if(context.started) 
+        if (context.started)
         {
-            if(Time.timeScale > 0) 
+            if (Time.timeScale > 0)
             {
                 UIManager.Instance.PauseOn();
             }
@@ -95,9 +99,9 @@ public class PlayerBehavior : MonoBehaviour
 
     public void OnRestart(InputAction.CallbackContext context)
     {
-        if(context.started) 
+        if (context.started)
         {
-            Debug.Log("Restart");
+            GameManager.Instance.ReloadScene();
         }
     }
 
@@ -122,7 +126,7 @@ public class PlayerBehavior : MonoBehaviour
             {
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Item"))
                 {
-                    if(hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
+                    if (hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
                     {
                         if (_playerInven != null)
                         {
@@ -133,6 +137,7 @@ public class PlayerBehavior : MonoBehaviour
                             _keySprite.color = _playerInven.GetItem()._itemColor;
                             hit.collider.gameObject.GetComponent<ItemInfo>().SetItem(temp);
                             //Debug.Log($"After Swap Item : {hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._itemName}");
+                            PrintInfo("열쇠 교체.");
                             return;
                         }
 
@@ -142,32 +147,34 @@ public class PlayerBehavior : MonoBehaviour
                             _keySprite.gameObject.SetActive(true);
                             _keySprite.color = _playerInven.GetItem()._itemColor;
                             hit.collider.gameObject.SetActive(false);
+                            PrintInfo("열쇠를 집었다.");
                             return;
                         }
                     }
-                    
+
                     else
                     {
-<<<<<<< Updated upstream
                         _playerLight.ResetLight();
-=======
-                        _playerLight[0].ResetLight();
-                        _playerLight[1].ResetLight();
                         PrintInfo("횃불을 집었다.");
->>>>>>> Stashed changes
                         return;
                         //hit.collider.gameObject.SetActive(false);
                     }
                 }
 
-                if(hit.collider != null && hit.collider.gameObject.CompareTag("OpenZone"))
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("OpenZone"))
                 {
                     Item needItem = hit.collider.gameObject.GetComponent<CheckItem>()._needItemInfo;
-                    if(needItem  == _playerInven.GetItem()) 
+                    if (_playerInven != null && needItem == _playerInven.GetItem())
                     {
                         hit.collider.gameObject.SetActive(false);
                         _keySprite.gameObject.SetActive(false);
                         _playerInven = null;
+                        PrintInfo("자물쇠가 열렸다");
+                        return;
+                    }
+                    else
+                    {
+                        PrintInfo("열리지 않는다.");
                         return;
                     }
                 }
@@ -175,6 +182,14 @@ public class PlayerBehavior : MonoBehaviour
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
                 {
                     hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    PrintInfo("문이 열렸다");
+                    return;
+                }
+
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
+                {
+                    hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    PrintInfo("문이 열렸다");
                     return;
                 }
             }
@@ -182,6 +197,27 @@ public class PlayerBehavior : MonoBehaviour
 
     }
 
+    private void PrintInfo(string text)
+    {
+        //StopCoroutine(InfoFade());
+        _infoText.text = text;
+        StartCoroutine(InfoFade());
+    }
+
+    IEnumerator InfoFade()
+    {
+        Color tempColor = _textBox.color;
+        tempColor.a += Time.deltaTime * 10f;
+        _textBox.color = tempColor;
+        yield return new WaitForSeconds(0.1f);
+        tempColor.a = 1f;
+        _textBox.color = tempColor;
+        _infoText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        tempColor.a = 0f;
+        _textBox.color = tempColor;
+        _infoText.gameObject.SetActive(false);
+    }
 
     protected void OnDrawGizmosSelected()
     {
