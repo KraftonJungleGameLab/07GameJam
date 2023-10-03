@@ -56,6 +56,7 @@ public class EnemyChase : MonoBehaviour
         if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
         {
             _isPlayerDetected = false;
+            return;
         }
 
 
