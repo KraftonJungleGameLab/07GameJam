@@ -10,9 +10,11 @@ public class EnemyChase : MonoBehaviour
     [SerializeField] private bool _isPlayerDetected = false;
     private NavMeshAgent _agent;
 
+    [SerializeField] private float _enemyBasicSpeed;
     [SerializeField] private float _enemyChaseSpeed;
 
     [SerializeField] private ParticleSystem particle;
+    private float _basicRange;
     [SerializeField] private float _detectRange;
     [SerializeField] private float _chaseRange;
     [SerializeField] private float _bodyRange;
@@ -27,6 +29,7 @@ public class EnemyChase : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _basicRange = _detectRange;
         _isParticleOn = false;
         _startPos = transform.position;
         _isPlayerDie = false;
@@ -54,11 +57,7 @@ public class EnemyChase : MonoBehaviour
         {
             _isPlayerDetected = false;
         }
-        /*else if(!Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
-        {
-            Debug.Log("Detect");
-            _isPlayerDetected = true;
-        }*/
+
 
         if (_isPlayerDetected)
         {
@@ -78,6 +77,7 @@ public class EnemyChase : MonoBehaviour
             _isParticleOn = false;
             _agent.SetDestination(_startPos);
             _agent.speed = 5;
+            _detectRange = _basicRange;
             if (particle.isPlaying)
                 particle.Stop();
         }
@@ -93,7 +93,7 @@ public class EnemyChase : MonoBehaviour
 
             if (hit.collider != null && hit.collider.CompareTag("Light"))
             {
-                _agent.speed = -1;
+                _agent.speed = 0.3f;
                 return;
             }
         }
@@ -104,7 +104,7 @@ public class EnemyChase : MonoBehaviour
         {
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                _detectRange = 5f;
+                _detectRange = _chaseRange;
                 _isPlayerDetected = true;
                 _agent.speed = _enemyChaseSpeed;
                 return;

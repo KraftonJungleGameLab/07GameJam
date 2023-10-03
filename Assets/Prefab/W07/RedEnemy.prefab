@@ -30,7 +30,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9057268717003531686}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5, y: -6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -125,10 +125,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isPlayerDetected: 0
-  _enemyChaseSpeed: 0
+  _enemyBasicSpeed: 1
+  _enemyChaseSpeed: 5
   particle: {fileID: 8239716549450598941, guid: 4cfcc5967ca91cf46a3055842a325251, type: 3}
-  _detectRange: 10
-  _chaseRange: 0
+  _detectRange: 5
+  _chaseRange: 10
   _bodyRange: 1
   _isParticleOn: 0
 --- !u!198 &9057268717003531681
