@@ -30,7 +30,7 @@ public class TestBake : MonoBehaviour
     IEnumerator Bake()
     {
         surface.BuildNavMesh();
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.45f);
         StartCoroutine(Bake());
     }
 

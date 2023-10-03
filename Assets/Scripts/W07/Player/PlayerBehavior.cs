@@ -9,7 +9,7 @@ public class PlayerBehavior : MonoBehaviour
     [SerializeField] private float _moveSpeed;
 
     private Rigidbody2D _myRigidBody;
-    private PlayerLight _playerLight;
+    [SerializeField] private PlayerLight[] _playerLight;
 
     private Vector2 inputVector;
 
@@ -25,7 +25,7 @@ public class PlayerBehavior : MonoBehaviour
     void Start()
     {
         _myRigidBody = GetComponent<Rigidbody2D>();
-        _playerLight = GetComponentInChildren<PlayerLight>();
+        //_playerLight = GetComponentInChildren<PlayerLight>();
         _volume = GetComponent<Volume>();
     }
 
@@ -148,7 +148,13 @@ public class PlayerBehavior : MonoBehaviour
                     
                     else
                     {
+<<<<<<< Updated upstream
                         _playerLight.ResetLight();
+=======
+                        _playerLight[0].ResetLight();
+                        _playerLight[1].ResetLight();
+                        PrintInfo("횃불을 집었다.");
+>>>>>>> Stashed changes
                         return;
                         //hit.collider.gameObject.SetActive(false);
                     }
