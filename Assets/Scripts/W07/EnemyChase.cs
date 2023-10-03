@@ -76,7 +76,7 @@ public class EnemyChase : MonoBehaviour
         {
             _isParticleOn = false;
             _agent.SetDestination(_startPos);
-            _agent.speed = 5;
+            _agent.speed = _enemyBasicSpeed;
             _detectRange = _basicRange;
             if (particle.isPlaying)
                 particle.Stop();
