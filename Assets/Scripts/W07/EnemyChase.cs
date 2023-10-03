@@ -7,14 +7,19 @@ using UnityEngine.AI;
 public class EnemyChase : MonoBehaviour
 {
     private PlayerBehavior _playerBehavior;
-    private bool _isPlayerDetected = false;
+    [SerializeField] private bool _isPlayerDetected = false;
     private NavMeshAgent _agent;
 
+    [SerializeField] private float _enemyBasicSpeed;
     [SerializeField] private float _enemyChaseSpeed;
 
     [SerializeField] private ParticleSystem particle;
+    private float _basicRange;
     [SerializeField] private float _detectRange;
+    [SerializeField] private float _chaseRange;
     [SerializeField] private float _bodyRange;
+
+    [SerializeField] private bool _isParticleOn;
 
     private Vector3 _startPos;
     private bool _isPlayerDie;
@@ -24,6 +29,8 @@ public class EnemyChase : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _basicRange = _detectRange;
+        _isParticleOn = false;
         _startPos = transform.position;
         _isPlayerDie = false;
         _playerBehavior = FindObjectOfType<PlayerBehavior>(); // FindAnyObjectByType 대신 FindObjectOfType 사용
@@ -50,18 +57,16 @@ public class EnemyChase : MonoBehaviour
         {
             _isPlayerDetected = false;
         }
-        else
-        {
-            _isPlayerDetected = true;
-        }
+
 
         if (_isPlayerDetected)
         {
             _agent.SetDestination(_playerBehavior.gameObject.transform.position);
             particle.transform.position = this.transform.position;
-            if (!particle.isPlaying)
+            if (!particle.isPlaying && !_isParticleOn)
             {
                 particle.Play();
+                _isParticleOn = true;
             }
 
             //Debug.Log("PlayerDetected bool" + _isPlayerDetected);
@@ -69,9 +74,10 @@ public class EnemyChase : MonoBehaviour
         }
         else
         {
-            _detectRange = 10f;
+            _isParticleOn = false;
             _agent.SetDestination(_startPos);
             _agent.speed = 5;
+            _detectRange = _basicRange;
             if (particle.isPlaying)
                 particle.Stop();
         }
@@ -84,6 +90,12 @@ public class EnemyChase : MonoBehaviour
                 GameManager.Instance.PlusDieFdt();
                 return;
             }
+
+            if (hit.collider != null && hit.collider.CompareTag("Light"))
+            {
+                _agent.speed = 0.3f;
+                return;
+            }
         }
 
         RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
@@ -92,7 +104,7 @@ public class EnemyChase : MonoBehaviour
         {
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
-                _detectRange = 20f;
+                _detectRange = _chaseRange;
                 _isPlayerDetected = true;
                 _agent.speed = _enemyChaseSpeed;
                 return;

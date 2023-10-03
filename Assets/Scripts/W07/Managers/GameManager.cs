@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
 
     public void ModifyMesh()
     {
-        _redSurface.BuildNavMesh();
+        _redSurface.BuildNavMesh();         
     }
 
     public void ReloadScene()

@@ -39,11 +39,11 @@ public class PlayerBehavior : MonoBehaviour
 
         foreach (RaycastHit2D hit in hits)
         {
-            if(hit.collider.gameObject.CompareTag("Enemy"))
+            if (hit.collider.gameObject.CompareTag("Enemy"))
             {
                 GameManager.Instance.PlusDieFdt();
                 return;
-            }                
+            }
         }
         GameManager.Instance.ResetDieFdt();
 
@@ -53,13 +53,13 @@ public class PlayerBehavior : MonoBehaviour
         {
             _fdt += Time.deltaTime;
             UIManager.Instance.UpdateCoolTime(_fdt);
-            if(_fdt > _skillMaxCT) 
+            if (_fdt > _skillMaxCT)
             {
                 _isSkillCT = false;
                 _fdt = 0;
             }
         }
-        
+
     }
 
     // Update is called once per frame
@@ -76,7 +76,7 @@ public class PlayerBehavior : MonoBehaviour
 
     public void OnColorDiff(InputAction.CallbackContext context)
     {
-        if(context.started && !_isSkillCT && !_isSkillUse) 
+        if (context.started && !_isSkillCT && !_isSkillUse)
         {
             StartCoroutine(ColorDiffOn());
         }
@@ -84,9 +84,9 @@ public class PlayerBehavior : MonoBehaviour
 
     public void OnPause(InputAction.CallbackContext context)
     {
-        if(context.started) 
+        if (context.started)
         {
-            if(Time.timeScale > 0) 
+            if (Time.timeScale > 0)
             {
                 UIManager.Instance.PauseOn();
             }
@@ -99,7 +99,7 @@ public class PlayerBehavior : MonoBehaviour
 
     public void OnRestart(InputAction.CallbackContext context)
     {
-        if(context.started) 
+        if (context.started)
         {
             GameManager.Instance.ReloadScene();
         }
@@ -126,7 +126,7 @@ public class PlayerBehavior : MonoBehaviour
             {
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Item"))
                 {
-                    if(hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
+                    if (hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
                     {
                         if (_playerInven != null)
                         {
@@ -151,7 +151,7 @@ public class PlayerBehavior : MonoBehaviour
                             return;
                         }
                     }
-                    
+
                     else
                     {
                         _playerLight.ResetLight();
@@ -161,10 +161,10 @@ public class PlayerBehavior : MonoBehaviour
                     }
                 }
 
-                if(hit.collider != null && hit.collider.gameObject.CompareTag("OpenZone"))
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("OpenZone"))
                 {
                     Item needItem = hit.collider.gameObject.GetComponent<CheckItem>()._needItemInfo;
-                    if(_playerInven != null && needItem == _playerInven.GetItem()) 
+                    if (_playerInven != null && needItem == _playerInven.GetItem())
                     {
                         hit.collider.gameObject.SetActive(false);
                         _keySprite.gameObject.SetActive(false);
@@ -177,6 +177,13 @@ public class PlayerBehavior : MonoBehaviour
                         PrintInfo("열리지 않는다.");
                         return;
                     }
+                }
+
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
+                {
+                    hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
+                    PrintInfo("문이 열렸다");
+                    return;
                 }
 
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
@@ -210,14 +217,6 @@ public class PlayerBehavior : MonoBehaviour
         tempColor.a = 0f;
         _textBox.color = tempColor;
         _infoText.gameObject.SetActive(false);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.gameObject.CompareTag("Goal"))
-        {
-            GameManager.Instance.NextScene();
-        }
     }
 
     protected void OnDrawGizmosSelected()

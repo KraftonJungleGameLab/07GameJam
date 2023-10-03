@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8011319683230940807}
   - component: {fileID: 8011319683230940806}
   - component: {fileID: -7253455460286892052}
+  - component: {fileID: 7345084204820995957}
   m_Layer: 0
   m_Name: Goal
   m_TagString: Goal
@@ -189,5 +190,17 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7345084204820995957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8011319683230940805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12deddb1aeada2f45b18f31dffa3e93a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

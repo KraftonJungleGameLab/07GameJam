@@ -123,9 +123,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95dd4cbb5b9ef7144b5a80d13d414da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPlayerDetected: 0
+  _enemyBasicSpeed: 3
+  _enemyChaseSpeed: 5
   particle: {fileID: 8239716549450598941, guid: 4cfcc5967ca91cf46a3055842a325251, type: 3}
   _detectRange: 10
-  _bodyRange: 1
+  _chaseRange: 10
+  _bodyRange: 0.5
+  _isParticleOn: 0
 --- !u!198 &1427204407170804132
 ParticleSystem:
   m_ObjectHideFlags: 0
