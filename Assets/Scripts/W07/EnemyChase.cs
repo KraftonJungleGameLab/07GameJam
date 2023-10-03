@@ -6,8 +6,22 @@ using UnityEngine.AI;
 
 public class EnemyChase : MonoBehaviour
 {
-    private PlayerBehavior _playerBehavior;
+    public enum EnemyState
+    {
+        Chase,
+        Patrol,
+        Return
+    }
+    [SerializeField] private GameObject patrolPosition1;
+    [SerializeField] private GameObject patrolPosition2;
+    private bool isPatroling1;
+    private Vector3 targetPosition;
+
+    [SerializeField] EnemyState currentState = EnemyState.Patrol;
+
+
     [SerializeField] private bool _isPlayerDetected = false;
+    private PlayerBehavior _playerBehavior;
     private NavMeshAgent _agent;
 
     [SerializeField] private float _enemyBasicSpeed;
@@ -43,88 +57,97 @@ public class EnemyChase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Vector2.Distance(transform.position, _startPos) > _maxDistance)
+        switch (currentState)
         {
-            //Debug.Log($"Distance : {Vector2.Distance(transform.position, _startPos)}");
+            case EnemyState.Patrol:
+                UpdatePatrol();
+                break;
+            case EnemyState.Chase:
+                UpdateChase();
+                break;
+            case EnemyState.Return:
+                UpdateReturn();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void UpdatePatrol()
+    {
+        LookForTargets();
+
+        if (Vector2.Distance(transform.position, _startPos) > _maxDistance)
+        {
             _agent.SetDestination(_startPos);
             _isPlayerDetected = false;
-            return;
+            currentState = EnemyState.Return;
         }
 
-
-        // 적과 플레이어 사이에 장애물이 있는지 검사
-        if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
+        if(Vector2.Distance(transform.position, _playerBehavior.transform.position) < _detectRange)
         {
-            _isPlayerDetected = false;
+            currentState = EnemyState.Chase;
+            _isPlayerDetected = true;
         }
-
+    }
+    private void LookForTargets()
+    {
+        if (isPatroling1)
+        {
+            _agent.SetDestination(patrolPosition2.transform.position);
+            float distance = Vector3.Distance(transform.position, patrolPosition2.transform.position);
+            if (distance < 0.1f)
+            {
+                isPatroling1 = false;
+            }
+        }
+        else
+        {
+            _agent.SetDestination(patrolPosition1.transform.position);
+            float distance = Vector3.Distance(transform.position, patrolPosition1.transform.position);
+            if (distance < 0.1f)
+            {
+                isPatroling1 = true;
+            }
+        }
+    }
+    private void UpdateChase()
+    {
+        if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")) || (Vector3.Distance(transform.position, targetPosition) < 0.1f))
+        {
+            currentState = EnemyState.Return;
+        }
+        else
+        {
+            targetPosition = _playerBehavior.gameObject.transform.position;
+        }
 
         if (_isPlayerDetected)
         {
-            _agent.SetDestination(_playerBehavior.gameObject.transform.position);
+            _agent.SetDestination(targetPosition);
             particle.transform.position = this.transform.position;
             if (!particle.isPlaying && !_isParticleOn)
             {
                 particle.Play();
                 _isParticleOn = true;
             }
-
-            //Debug.Log("PlayerDetected bool" + _isPlayerDetected);
-            //Debug.Log(particle.transform.position);
         }
         else
         {
-            _isParticleOn = false;
-            _agent.SetDestination(_startPos);
-            _agent.speed = _enemyBasicSpeed;
-            _detectRange = _basicRange;
-            if (particle.isPlaying)
-                particle.Stop();
+            currentState = EnemyState.Return;
         }
-
-        RaycastHit2D[] bodyhits = Physics2D.CircleCastAll(this.transform.position, _bodyRange, Vector2.zero);
-        foreach (RaycastHit2D hit in bodyhits)
-        {
-            if (hit.collider != null && hit.collider.CompareTag("Player"))
-            {
-                GameManager.Instance.PlusDieFdt();
-                return;
-            }
-
-            if (hit.collider != null && hit.collider.CompareTag("Light"))
-            {
-                _agent.speed = 0.3f;
-                return;
-            }
-        }
-
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, _detectRange, Vector2.zero);
-
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider != null && hit.collider.CompareTag("Player"))
-            {
-                _detectRange = _chaseRange;
-                _isPlayerDetected = true;
-                _agent.speed = _enemyChaseSpeed;
-                return;
-            }
-        }
-        _isPlayerDetected = false;
     }
 
-    IEnumerator PlayerDie()
+    private void UpdateReturn()
     {
-        if (!_isPlayerDie)
-        {
-            Debug.Log("PlayerDie");
-            _isPlayerDie = true;
-            //SoundManager.instance.StopBGM();
-            //SoundManager.instance.PlaySE("Die");
-            //UIManager.Instance.NextSceneOn();
-        }
-        yield return new WaitForSeconds(2f);
-        //LevelManager.instance.ReloadScene();
+        _isParticleOn = false;
+        _agent.SetDestination(_startPos);
+        if (Vector3.Distance(transform.position, _startPos) < 0.1f)
+            currentState = EnemyState.Patrol;
+        _agent.speed = 5;
+        _detectRange = _basicRange;
+        if (particle.isPlaying)
+            particle.Stop();
     }
 
     protected void OnDrawGizmosSelected()
