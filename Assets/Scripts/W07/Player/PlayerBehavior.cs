@@ -126,8 +126,14 @@ public class PlayerBehavior : MonoBehaviour
             {
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Item"))
                 {
-                    if (hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
+                    ItemInfo keyObject = hit.collider.gameObject.GetComponent<ItemInfo>();
+                    if (keyObject.GetItem()._isKey)
                     {
+                        if(keyObject._isSpawnObject)
+                        {
+                            keyObject.SpawnObejct();
+                        }
+
                         if (_playerInven != null)
                         {
                             Item temp = _playerInven.GetItem();

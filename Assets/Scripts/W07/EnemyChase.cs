@@ -93,7 +93,7 @@ public class EnemyChase : MonoBehaviour
                     break;
                 default:
                     break;
-            }  
+            }
         }
     }
 
@@ -123,35 +123,34 @@ public class EnemyChase : MonoBehaviour
     {
         if (Vector2.Distance(transform.position, _playerBehavior.transform.position) < _detectRange)
         {
-            currentState = EnemyState.Chase;
-            _isPlayerDetected = true;
+            if (!Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
+            {
+                currentState = EnemyState.Chase;
+                targetPosition = _playerBehavior.transform.position;
+                Debug.Log($"TargetDetect : {targetPosition}");
+                _isPlayerDetected = true;
+                return;
+            }
+
+
         }
-        
+        _isPlayerDetected = false;
+
     }
     private void UpdateChase()
     {
+        _agent.speed = _enemyChaseSpeed;
         if (Vector2.Distance(transform.position, _startPos) > _maxDistance)
         {
             _agent.SetDestination(_startPos);
             _isPlayerDetected = false;
             currentState = EnemyState.Return;
+            return;
         }
-         
-        if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
-        {
-            if (Vector2.Distance(transform.position, targetPosition) < 0.1f)
-            {
-                currentState = EnemyState.Return;
-                Debug.Log(transform.position);
-            }
 
-        }
-        else
-        {
-            targetPosition = _playerBehavior.gameObject.transform.position;
-        }
         if (_isPlayerDetected)
         {
+            LookForTargets();
             _agent.SetDestination(targetPosition);
             particle.transform.position = this.transform.position;
             if (!particle.isPlaying && !_isParticleOn)
@@ -159,6 +158,24 @@ public class EnemyChase : MonoBehaviour
                 particle.Play();
                 _isParticleOn = true;
             }
+            
+            if (Vector2.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                LookForTargets();
+                //_isPlayerDetected = false;
+            }
+        }
+
+        else
+        {
+            _agent.SetDestination(targetPosition);
+            if (Vector2.Distance(transform.position, targetPosition) < 1.0f || 
+                Physics2D.Linecast(transform.position, targetPosition, LayerMask.GetMask("Obstacle")))
+            {
+                currentState = EnemyState.Return;
+                Debug.Log("Return");
+            }       
+            //         
         }
     }
 
@@ -166,6 +183,7 @@ public class EnemyChase : MonoBehaviour
     {
         _isParticleOn = false;
         _agent.SetDestination(_startPos);
+        LookForTargets();
         if (Vector3.Distance(transform.position, _startPos) < 0.1f)
             if (isPatrol)
             {
@@ -175,7 +193,7 @@ public class EnemyChase : MonoBehaviour
             {
                 currentState = EnemyState.Wait;
             }
-        _agent.speed = 5;
+        _agent.speed = _enemyBasicSpeed;
         _detectRange = _basicRange;
         if (particle.isPlaying)
             particle.Stop();
