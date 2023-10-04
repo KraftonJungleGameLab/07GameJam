@@ -55,6 +55,7 @@ public class EnemyChase : MonoBehaviour
         _isPlayerDie = false;
         _playerBehavior = GameManager.Instance.player; // FindAnyObjectByType 대신 FindObjectOfType 사용
         _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = _enemyBasicSpeed;
         _agent.updateUpAxis = false;
         _agent.updateRotation = false;
         particle = GetComponent<ParticleSystem>();
@@ -63,9 +64,31 @@ public class EnemyChase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_isInfChaseEnemy) 
+        if (_isInfChaseEnemy)
         {
             InfChase();
+        }
+
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 0.5f, Vector2.zero);
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.gameObject.CompareTag("Light"))
+            {
+                if (currentState == EnemyState.Patrol || currentState == EnemyState.Wait || currentState == EnemyState.Return)
+                {
+                    _agent.speed = _enemyBasicSpeed - 1;
+                }
+
+                else if (currentState == EnemyState.Chase)
+                {
+                    _agent.speed = _enemyChaseSpeed - 1;
+                }
+            }
+        }
+
+        if (_isInfChaseEnemy)
+        {
             return;
         }
 
@@ -95,9 +118,11 @@ public class EnemyChase : MonoBehaviour
                     LookForTargets();
                     break;
                 case EnemyState.Chase:
+                    _agent.speed = _enemyChaseSpeed;
                     UpdateChase();
                     break;
                 case EnemyState.Return:
+                    _agent.speed = _enemyBasicSpeed;
                     UpdateReturn();
                     break;
                 default:
@@ -150,15 +175,13 @@ public class EnemyChase : MonoBehaviour
                 _isPlayerDetected = true;
                 return;
             }
-
-
         }
         _isPlayerDetected = false;
 
     }
     private void UpdateChase()
     {
-        _agent.speed = _enemyChaseSpeed;
+        
         if (Vector2.Distance(transform.position, _startPos) > _maxDistance)
         {
             _agent.SetDestination(_startPos);

@@ -140,7 +140,6 @@ GameObject:
   - component: {fileID: 6167158989737701370}
   - component: {fileID: 6167158989737701373}
   - component: {fileID: 6167158989737701372}
-  - component: {fileID: 6167158989737701371}
   m_Layer: 0
   m_Name: PlayerLightArea
   m_TagString: Untagged
@@ -231,22 +230,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &6167158989737701371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6167158989737701369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: f46d2d58
 --- !u!1 &6167158990481204951
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +279,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _item: {fileID: 11400000, guid: 04dc1380cd8f9714f91057e54a699b88, type: 2}
+  _isSpawnObject: 0
+  _spawnObject: {fileID: 0}
 --- !u!212 &6167158990481204953
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -178,6 +178,7 @@ public class PlayerBehavior : MonoBehaviour
                         hit.collider.gameObject.SetActive(false);
                         _keySprite.gameObject.SetActive(false);
                         _playerInven = null;
+                        GameManager.Instance.ModifyMesh();
                         PrintInfo("ÀÚ¹°¼è°¡ ¿­·È´Ù");
                         return;
                     }
