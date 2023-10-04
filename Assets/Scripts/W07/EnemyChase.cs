@@ -111,7 +111,6 @@ public class EnemyChase : MonoBehaviour
         }
         else
         {
-            currentState = EnemyState.Wait;
             switch (currentState)
             {
                 case EnemyState.Wait:
