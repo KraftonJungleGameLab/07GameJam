@@ -191,14 +191,14 @@ public class PlayerBehavior : MonoBehaviour
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
                 {
                     hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
-                    PrintInfo("문이 열렸다");
+                    PrintInfo("소리가 들렸다");
                     return;
                 }
 
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
                 {
                     hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
-                    PrintInfo("문이 열렸다");
+                    PrintInfo("소리가 들렸다");
                     return;
                 }
             }
