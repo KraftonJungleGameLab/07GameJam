@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class Switch : MonoBehaviour
 {
-    [SerializeField] private GameObject _switchDoor;
+    [SerializeField] private List <GameObject> _switchDoor;
 
     public void OpenDoor()
     {
-        if (_switchDoor.activeSelf)
+        //if (_switchDoor.activeSelf)
+        //{
+        //    _switchDoor.SetActive(false);
+        //    GameManager.Instance.ModifyMesh();
+        //}
+        //else
+        //{
+        //    _switchDoor.SetActive(true);
+        //    GameManager.Instance.ModifyMesh();
+        //}
+
+        foreach(GameObject door in _switchDoor) 
         {
-            _switchDoor.SetActive(false);
-            GameManager.Instance.ModifyMesh();
-        }      
+            door.SetActive(!door.activeSelf);
+        }
+        GameManager.Instance.ModifyMesh();
     }
 }
