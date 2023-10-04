@@ -5,7 +5,6 @@ using UnityEngine;
 public class Switch : MonoBehaviour
 {
     [SerializeField] private List <GameObject> _switchDoor;
-
     public void OpenDoor()
     {
         //if (_switchDoor.activeSelf)
