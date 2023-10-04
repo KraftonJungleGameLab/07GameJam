@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -10,10 +11,12 @@ public class EnemyChase : MonoBehaviour
     {
         Chase,
         Patrol,
-        Return
+        Return,
+        Wait
     }
     [SerializeField] private GameObject patrolPosition1;
     [SerializeField] private GameObject patrolPosition2;
+    [SerializeField] private bool isPatrol = false;
     private bool isPatroling1;
     private Vector3 targetPosition;
 
@@ -57,41 +60,46 @@ public class EnemyChase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch (currentState)
+        if (isPatrol)
         {
-            case EnemyState.Patrol:
-                UpdatePatrol();
-                break;
-            case EnemyState.Chase:
-                UpdateChase();
-                break;
-            case EnemyState.Return:
-                UpdateReturn();
-                break;
-            default:
-                break;
+            switch (currentState)
+            {
+                case EnemyState.Patrol:
+                    UpdatePatrol();
+                    break;
+                case EnemyState.Chase:
+                    UpdateChase();
+                    break;
+                case EnemyState.Return:
+                    UpdateReturn();
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            currentState = EnemyState.Wait;
+            switch (currentState)
+            {
+                case EnemyState.Wait:
+                    LookForTargets();
+                    break;
+                case EnemyState.Chase:
+                    UpdateChase();
+                    break;
+                case EnemyState.Return:
+                    UpdateReturn();
+                    break;
+                default:
+                    break;
+            }  
         }
     }
 
     private void UpdatePatrol()
     {
         LookForTargets();
-
-        if (Vector2.Distance(transform.position, _startPos) > _maxDistance)
-        {
-            _agent.SetDestination(_startPos);
-            _isPlayerDetected = false;
-            currentState = EnemyState.Return;
-        }
-
-        if(Vector2.Distance(transform.position, _playerBehavior.transform.position) < _detectRange)
-        {
-            currentState = EnemyState.Chase;
-            _isPlayerDetected = true;
-        }
-    }
-    private void LookForTargets()
-    {
         if (isPatroling1)
         {
             _agent.SetDestination(patrolPosition2.transform.position);
@@ -111,17 +119,37 @@ public class EnemyChase : MonoBehaviour
             }
         }
     }
+    private void LookForTargets()
+    {
+        if (Vector2.Distance(transform.position, _playerBehavior.transform.position) < _detectRange)
+        {
+            currentState = EnemyState.Chase;
+            _isPlayerDetected = true;
+        }
+        
+    }
     private void UpdateChase()
     {
-        if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")) || (Vector3.Distance(transform.position, targetPosition) < 0.1f))
+        if (Vector2.Distance(transform.position, _startPos) > _maxDistance)
         {
+            _agent.SetDestination(_startPos);
+            _isPlayerDetected = false;
             currentState = EnemyState.Return;
+        }
+         
+        if (Physics2D.Linecast(transform.position, _playerBehavior.gameObject.transform.position, LayerMask.GetMask("Obstacle")))
+        {
+            if (Vector2.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                currentState = EnemyState.Return;
+                Debug.Log(transform.position);
+            }
+
         }
         else
         {
             targetPosition = _playerBehavior.gameObject.transform.position;
         }
-
         if (_isPlayerDetected)
         {
             _agent.SetDestination(targetPosition);
@@ -132,10 +160,6 @@ public class EnemyChase : MonoBehaviour
                 _isParticleOn = true;
             }
         }
-        else
-        {
-            currentState = EnemyState.Return;
-        }
     }
 
     private void UpdateReturn()
@@ -143,7 +167,14 @@ public class EnemyChase : MonoBehaviour
         _isParticleOn = false;
         _agent.SetDestination(_startPos);
         if (Vector3.Distance(transform.position, _startPos) < 0.1f)
-            currentState = EnemyState.Patrol;
+            if (isPatrol)
+            {
+                currentState = EnemyState.Patrol;
+            }
+            else
+            {
+                currentState = EnemyState.Wait;
+            }
         _agent.speed = 5;
         _detectRange = _basicRange;
         if (particle.isPlaying)
