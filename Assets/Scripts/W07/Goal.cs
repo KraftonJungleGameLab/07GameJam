@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-   
-    // Update is called once per frame
-    void Update()
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 0.5f, Vector2.zero);
-        
-        foreach (RaycastHit2D hit in hits)
+        if (collision.gameObject.CompareTag("Player"))
         {
-            if(hit.collider !=null && hit.collider.gameObject.CompareTag("Player"))
-            {
-                GameManager.Instance.NextScene();
-            }
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
+
     }
 }
