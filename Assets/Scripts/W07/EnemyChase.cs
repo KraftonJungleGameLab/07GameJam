@@ -14,6 +14,8 @@ public class EnemyChase : MonoBehaviour
         Return,
         Wait
     }
+    [SerializeField] private bool _isInfChaseEnemy;
+
     [SerializeField] private GameObject patrolPosition1;
     [SerializeField] private GameObject patrolPosition2;
     [SerializeField] private bool isPatrol = false;
@@ -43,6 +45,7 @@ public class EnemyChase : MonoBehaviour
 
     private float _maxDistance = 17.5f;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +53,7 @@ public class EnemyChase : MonoBehaviour
         _isParticleOn = false;
         _startPos = transform.position;
         _isPlayerDie = false;
-        _playerBehavior = FindObjectOfType<PlayerBehavior>(); // FindAnyObjectByType 대신 FindObjectOfType 사용
+        _playerBehavior = GameManager.Instance.player; // FindAnyObjectByType 대신 FindObjectOfType 사용
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateUpAxis = false;
         _agent.updateRotation = false;
@@ -60,6 +63,12 @@ public class EnemyChase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(_isInfChaseEnemy) 
+        {
+            InfChase();
+            return;
+        }
+
         if (isPatrol)
         {
             switch (currentState)
@@ -94,6 +103,16 @@ public class EnemyChase : MonoBehaviour
                 default:
                     break;
             }
+        }
+    }
+
+    private void InfChase()
+    {
+        if (gameObject.activeSelf)
+        {
+            this.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+            targetPosition = _playerBehavior.transform.position;
+            _agent.SetDestination(targetPosition);
         }
     }
 

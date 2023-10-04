@@ -30,5 +30,6 @@ public class ItemInfo : MonoBehaviour, IObjectItem
     public void SpawnObejct()
     {
         _spawnObject.SetActive(true);
+        //GameManager.Instance.ModifyMesh();
     }
 }
