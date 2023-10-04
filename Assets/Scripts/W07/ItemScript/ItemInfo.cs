@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ItemInfo : MonoBehaviour, IObjectItem
 {
-    [SerializeField]private Item _item;
-
+    [SerializeField] private Item _item;
+    public bool _isSpawnObject;
+    [SerializeField] private GameObject _spawnObject;
     private SpriteRenderer _spriteRenderer;
 
     public Item GetItem()
@@ -24,5 +25,11 @@ public class ItemInfo : MonoBehaviour, IObjectItem
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         SetItem(this._item);
+    }
+
+    public void SpawnObejct()
+    {
+        _spawnObject.SetActive(true);
+        //GameManager.Instance.ModifyMesh();
     }
 }

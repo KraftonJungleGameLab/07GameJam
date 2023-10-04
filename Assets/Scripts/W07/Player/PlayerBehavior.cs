@@ -21,6 +21,9 @@ public class PlayerBehavior : MonoBehaviour
     public float _fdt;
     public float _skillMaxCT;
 
+    private float _textFdt;
+    private bool _isTextOn;
+
     public Image _textBox;
     public TextMeshProUGUI _infoText;
 
@@ -126,16 +129,22 @@ public class PlayerBehavior : MonoBehaviour
             {
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Item"))
                 {
-                    if (hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._isKey)
+                    ItemInfo keyObject = hit.collider.gameObject.GetComponent<ItemInfo>();
+                    if (keyObject.GetItem()._isKey)
                     {
+                        if(keyObject._isSpawnObject)
+                        {
+                            keyObject.SpawnObejct();
+                        }
+
                         if (_playerInven != null)
                         {
                             Item temp = _playerInven.GetItem();
 
-                            _playerInven.SetItem(hit.collider.gameObject.GetComponent<ItemInfo>().GetItem());
+                            _playerInven.SetItem(keyObject.GetItem());
                             //Debug.Log($"Drop Item : {hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._itemName}");
                             _keySprite.color = _playerInven.GetItem()._itemColor;
-                            hit.collider.gameObject.GetComponent<ItemInfo>().SetItem(temp);
+                            keyObject.SetItem(temp);
                             //Debug.Log($"After Swap Item : {hit.collider.gameObject.GetComponent<ItemInfo>().GetItem()._itemName}");
                             PrintInfo("ø≠ºË ±≥√º.");
                             return;
@@ -143,7 +152,7 @@ public class PlayerBehavior : MonoBehaviour
 
                         else if (_playerInven == null)
                         {
-                            _playerInven = hit.collider.gameObject.GetComponent<ItemInfo>();
+                            _playerInven = keyObject;
                             _keySprite.gameObject.SetActive(true);
                             _keySprite.color = _playerInven.GetItem()._itemColor;
                             hit.collider.gameObject.SetActive(false);
@@ -182,14 +191,14 @@ public class PlayerBehavior : MonoBehaviour
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
                 {
                     hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
-                    PrintInfo("πÆ¿Ã ø≠∑»¥Ÿ");
+                    PrintInfo("º“∏Æ∞° µÈ∑»¥Ÿ");
                     return;
                 }
 
                 if (hit.collider != null && hit.collider.gameObject.CompareTag("Switch"))
                 {
                     hit.collider.gameObject.GetComponent<Switch>().OpenDoor();
-                    PrintInfo("πÆ¿Ã ø≠∑»¥Ÿ");
+                    PrintInfo("º“∏Æ∞° µÈ∑»¥Ÿ");
                     return;
                 }
             }
@@ -199,11 +208,12 @@ public class PlayerBehavior : MonoBehaviour
 
     private void PrintInfo(string text)
     {
-        //StopCoroutine(InfoFade());
+        StopCoroutine(InfoFade());
         _infoText.text = text;
         StartCoroutine(InfoFade());
     }
 
+    
     IEnumerator InfoFade()
     {
         Color tempColor = _textBox.color;
